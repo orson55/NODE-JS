@@ -1,0 +1,509 @@
+How to Start a Node Server: Examples with the Most Popular Frameworks
+By  Tendai Mutunhire • January 18, 2018 • 1 Comment
+Hello World with a Node.js Server
+Did you know that there are multiple ways to start a Node.js server and keep it running? In this post, we will explore various ways to start an HTTP Node server.
+
+A Node.js server makes your app available to serve HTTP requests. It provides the interaction between users and your application.
+
+Creating and starting a server is easy with Node.js's built-in http module.
+
+In a file app.js, create and save the following server-creation code:
+
+// app.js
+
+const http = require('http');
+
+// Create an instance of the http server to handle HTTP requests
+let app = http.createServer((req, res) => {  
+    // Set a response type of plain text for the response
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+
+    // Send back a response and end the connection
+    res.end('Hello World!\n');
+});
+
+// Start the server on port 3000
+app.listen(3000, '127.0.0.1');  
+console.log('Node server running on port 3000');  
+In your terminal, run the command:
+
+$ node app.js
+and visit http://localhost:3000 in your browser.
+
+Hello, World!
+
+You should see that our server is running, and you are greeted with the text "Hello, World!" in your browser. We created an instance of an HTTP server using the built-in http module. This is a simple but highly powerful server that can handle requests, issue responses and a whole lot more.
+
+We can see the additional power of the basic HTTP server by extending it as follows to stream a video file. First, in the same directory with your app.js file, create a new directory named assets. Inside assets, place an mp4 video file of your choice. Then adjust the new code listing below to replace my video name with your exact video name.
+
+// app.js
+
+const http = require('http');  
+const fs = require('fs');     // to help serve a local video file
+
+// Create an instance of the http server to handle HTTP requests
+let app = http.createServer((req, res) => {  
+    // Set a response type of mp4 video for the response
+    res.writeHead(200, {'Content-Type': 'video/mp4'});
+
+    // Read the video into a stream
+    let vidstream = fs.createReadStream('assets/Yngwie_Malmsteen_interview.mp4');
+
+    // Pipe our stream into the response
+    vidstream.pipe(res);
+});
+
+// Start the server on port 3000
+app.listen(3000, '127.0.0.1');  
+console.log('Node server running on port 3000');  
+Now, when you restart the server and visit the app in the browser, you will see that our server is now streaming a video file.
+
+Streaming video
+
+Other Options for Starting a Server with Node.js
+Using Other Server Modules
+We can also start a Node server using the server npm module. Note that this module requires Node version 7.6.0 or later.
+
+In a fresh project, install the module with the command npm install server --save. Then create a file app.js with the following contents:
+
+// app.js
+
+const server = require('server');
+
+const { get, post } = server.router;
+
+// Launch server
+server({ port: 3000 }, [  
+    get('/', ctx => 'Hello world!')
+]);
+Run the server with
+
+$ node app.js
+In your browser, you should see the "Hello world!" text.
+
+If all you want is a Node.js server to serve HTML and serve static files without you coding anything for the server, Node has a solution for that as well. In this case you need to install the http-server zero-configuration, command-line server to serve your files.
+
+To use http-server, install it with the command npm install http-server -g.
+
+In a fresh directory, create a child directory named public in which we will place static files for http-server to serve. Create a static HTML file inside this public directory named index.html with the following contents:
+
+<!-- public/index.html -->  
+<html>  
+  <head>
+    <title>Hello from http-server</title>
+  </head>
+  <body>
+
+    <h1>Hello, World!</h1>
+
+   </body>
+</html>  
+Then you can run the http-server using the command:
+
+$ http-server ./public
+Visit http://localhost:8081 to verify that the server is running and serves our file with the "Hello World" message. This Node.js serving option is useful for serving a simple app that does mainly front-end work.
+
+Keeping Servers Running with forever
+Another scenario arises when you have a running Node.js server that you want to keep running automatically. forever will help you keep Node servers running even after the operating system is rebooted. It also restarts your app after a crash, making it useful for monitoring and restarting Node servers.
+
+Keep Servers Running with PM2
+PM2 is an alternative to forever that keeps apps running between server restarts. It also has a built-in load balancer for improved uptime. It is a bit more powerful, but also complicated, so it may not be suited for beginners.
+
+How Frameworks Help to Start a Node Server
+Besides the options for running servers we discussed above, you can also run a server using code provided by the framework itself. Frameworks bring advantages like good default conventions and the ability to develop fast without writing common software routines from scratch.
+
+A list of the most popular Node frameworks based on GitHub stars includes the following:
+
+Express
+Koa
+Socket.io
+Meteor
+Loopback
+In the following sections we will show how to start a Node server using a few of these popular options.
+
+Framework 1: Starting a Node Server with Express
+Express is the most well-known minimalist web framework for Node.js. It is suited for all kinds of apps from small to large. Because it leaves most of the choices to the developer, it's good for seasoned developers.
+
+To get started, create a new project folder with a file inside it named app.js.
+
+Next, install Express with the following:
+
+$ npm install express
+
+Now update app.js as follows to start a Node server using Express.
+
+// app.js
+const express = require('express')
+
+// Create Express app
+const app = express()
+
+// A sample route
+app.get('/', (req, res) => res.send('Hello World!'))
+
+// Start the Express server
+app.listen(3000, () => console.log('Server running on port 3000!'))  
+Run the server with the command:
+
+$ node app.js
+and visit http://localhost:3000 to see the Express server in action.
+
+Framework 2: Starting a Node Server with Koa.js
+Koa is a minimalist framework by the makers of Express. It aims to be simpler, even less opinionated, and more expressive. As such, it is recommended for developers who want a more purist approach than even Express provides.
+
+Install Koa with:
+
+$ npm i koa
+Create the following minimal Koa app inside a new file, app.js.
+
+// app.js
+const Koa = require('koa');
+
+// Create Koa app
+const app = new Koa();
+
+// Serve requests, here, printing out a simple greeting
+app.use(async ctx => {  
+    ctx.body = 'Hello World';
+});
+
+// Start the server
+app.listen(3000);  
+Run this server by executing:
+
+$ node app.js
+Then visit http://localhost:3000 in your browser to see the server running. You will be greeted by the same response text as we saw when running the Express server.
+
+Framework 3: Node a Server with Socket.io
+Socket.io is a real-time Node framework. It is particularly advantageous when you are developing messaging and chat applications. The platform works equally well for other apps involving bidirectional, event-based calls.
+
+Create a new project and install Socket.io with the command:
+
+$ npm install --save socket.io
+Also install Express, which we'll use to integrate with Socket.io, using the command:
+
+Subscribe to our Newsletter
+Get occassional tutorials, guides, and reviews in your inbox. No spam ever. Unsubscribe at any time.
+
+Enter your email...
+ $ npm install --save express@4.15.2
+Then create a file index.js with the following:
+
+// index.js
+// Require and create our server packages
+let app = require('express')();  
+let http = require('http').Server(app);  
+let io = require('socket.io')(http);
+
+// Send socket initialization scripts to the client
+app.get('/', function(req, res){  
+    res.send(`
+<script src="/socket.io/socket.io.js"></script>  
+<script>  
+    let socket = io();
+    socket.on('text', (txt) => {
+        let textp = document.createElement("h1");
+        let t = document.createTextNode(txt);
+        textp.appendChild(t);                                            
+        document.body.appendChild(textp);
+    });
+</script>`);  
+});
+
+// Respond to socket connections with a Hello World text
+io.on('connection', (socket) => {  
+    console.log('User connected');
+    io.emit('text', 'Hello, World!');
+});
+
+// Run our socket-enabled server
+http.listen(3000, function() {  
+    console.log('listening on *:3000');
+});
+What this does is create a socket.io instance attached to our Express server. When clients connect to the socket, our socket.io server sends back a "Hello, World" greeting over the socket connection. To see the results, run the following command:
+
+$ node index.js
+Framework 4: Server with Diet.js
+Diet.js is a micro-framework for writing modular Node.js apps and APIs. It allows creating of virtual hosts and other cool features. You will want to consider it as an alternative to minimalist frameworks like Express. The core of the framework is only 450 SLOC. It integrates with a wide variety of middleware that runs on Node.js.
+
+To start a server using Diet.js, create a new project and install Diet.js with:
+
+$ npm install diet
+Then, create a source file index.js with the following code:
+
+// index.js
+const server = require('diet');
+
+// Create a diet server
+let app = server();
+
+// Start the server on port 3000
+app.listen('http://localhost:3000');
+
+// Serve the home route
+app.get('/', ($) => {  
+    // Respond with a greeting and end the request
+    $.end('Hello, World!');
+});
+Start the server with the command:
+
+$ node index.js
+And then visit http://localhost:3000 to view the server running.
+
+Diet.js has a simple API, combining many concepts from Express in a simpler API and implementation. This reduces the learning curve for developing a simple app. If you have a bigger app in mind, more structured frameworks like Sails.js might suit you better.
+
+Framework 5: Starting a Node Server with Sails.js
+Sails is the Node.js answer to full-featured MVC frameworks like Ruby on Rails. Its use of Node.js real-time capabilities makes it a fit for apps using websockets and messaging. It comes with blueprints that make it easy to quickly prototype a backend with very little code.
+
+Let's create a fresh new directory and install Sails with the following:
+
+$ npm install sails -g
+This installs Sails globally on your system. Then, create a Sails app with the command $ sails new helloapp. Inside the newly created helloapp folder, run the Sails server with the command:
+
+$ sails lift
+
+Visit http://localhost:1337 to see the app served locally.
+
+Sails generated a complete app with the sails new command. The app is initialized in the file app.js, which has the following generated contents:
+
+/**
+ * app.js
+ *
+ * Use `app.js` to run your app without `sails lift`.
+ * To start the server, run: `node app.js`.
+ *
+ * This is handy in situations where the sails CLI is not relevant or useful.
+ *
+ * For example:
+ *   => `node app.js`
+ *   => `forever start app.js`
+ *   => `node debug app.js`
+ *   => `modulus deploy`
+ *   => `heroku scale`
+ *
+ *
+ * The same command-line arguments are supported, e.g.:
+ * `node app.js --silent --port=80 --prod`
+ */
+
+
+// Ensure we're in the project directory, so cwd-relative paths work as expected
+// no matter where we actually lift from.
+// > Note: This is not required in order to lift, but it is a convenient default.
+process.chdir(__dirname);
+
+// Attempt to import `sails`.
+var sails;  
+try {  
+  sails = require('sails');
+} catch (e) {
+  console.error('To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.');
+  console.error('To do that, run `npm install sails`');
+  console.error('');
+  console.error('Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.');
+  console.error('When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,');
+  console.error('but if it doesn\'t, the app will run with the global sails instead!');
+  return;
+}
+
+// --•
+// Try to get `rc` dependency (for loading `.sailsrc` files).
+var rc;  
+try {  
+  rc = require('rc');
+} catch (e0) {
+  try {
+    rc = require('sails/node_modules/rc');
+  } catch (e1) {
+    console.error('Could not find dependency: `rc`.');
+    console.error('Your `.sailsrc` file(s) will be ignored.');
+    console.error('To resolve this, run:');
+    console.error('npm install rc --save');
+    rc = function () { return {}; };
+  }
+}
+
+
+// Start server
+sails.lift(rc('sails'));  
+The initialization code imports Sails, then loads the application and starts the Sails server.
+
+Sails has the advantage of being particularly fast and scalable. In this benchmark against Rails, Sails performed as much as 3x-4x as fast. The performance-critical part of Sails for apps at scale tends to be the database, where pagination and indexes can be used to speed things up.
+
+Framework 6: Using MEAN.io for a Node Server
+MEAN.io is one of the more well-known full-stack JavaScript frameworks. It is one variant of the so-called "MEAN Stack", with MEAN.js being another variant. MEAN uses MongoDB, Express, Angular and Node.js.
+
+To start a MEAN.io app, clone the reference implementation of the MEAN.io model app using the command:
+
+$ git clone https://github.com/linnovate/mean.git  
+Suggested Course: Master the MEAN Stack - Learn By Example
+You can alternatively clone into another directory of your choice. Then change into the new mean directory or your chosen directory, and install dependencies with:
+
+$ npm install
+Run the application with npm start and visit http://localhost:4040 to see it in action.
+
+The code for setting up the server is found in the file server\\config\\express.js which contains the following:
+
+import express from 'express';  
+import logger from 'morgan';  
+import bodyParser from 'body-parser';  
+import cookieParser from 'cookie-parser';  
+import compress from 'compression';  
+import methodOverride from 'method-override';  
+import cors from 'cors';  
+import httpStatus from 'http-status';  
+import expressWinston from 'express-winston';  
+import expressValidation from 'express-validation';  
+import helmet from 'helmet';  
+import winstonInstance from './winston';  
+import routes from '../routes/index.route';  
+import config from './config';  
+import APIError from '../helpers/APIError';  
+import path from 'path';  
+import appRoot from 'app-root-path';  
+import innograph from 'innograph'  
+import postCtrl from '../controllers/post.controller';
+
+
+const app = express();
+
+if (config.env === 'development') {  
+  app.use(logger('dev'));
+}
+
+// parse body params and attache them to req.body
+app.use(bodyParser.json());  
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser());  
+app.use(compress());  
+app.use(methodOverride());
+
+// secure apps by setting various HTTP headers
+app.use(helmet());
+
+// enable CORS - Cross Origin Resource Sharing
+app.use(cors());
+
+// enable detailed API logging in dev env
+if (config.env === 'development') {  
+  expressWinston.requestWhitelist.push('body');
+  expressWinston.responseWhitelist.push('body');
+  // app.use(expressWinston.logger({
+  //   winstonInstance,
+  //   meta: true, // optional: log meta data about request (defaults to true)
+  //   msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
+  //   colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
+  // }));
+}
+app.use(express.static(path.join(appRoot.path, 'dist')));
+
+app.use('/api', routes);
+
+innograph.init('/api/graphql', app, {post: postCtrl});
+
+app.get('*', (req, res) => {  
+  res.sendFile(path.join(appRoot.path, 'dist/index.html'));
+});
+
+// if error is not an instanceOf APIError, convert it.
+app.use((err, req, res, next) => {  
+  if (err instanceof expressValidation.ValidationError) {
+    // validation error contains errors which is an array of error each containing message[]
+    const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
+    const error = new APIError(unifiedErrorMessage, err.status, true);
+    return next(error);
+  } else if (!(err instanceof APIError)) {
+    const apiError = new APIError(err.message, err.status, err.isPublic);
+    return next(apiError);
+  }
+  return next(err);
+});
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => {  
+  const err = new APIError('API not found', httpStatus.NOT_FOUND);
+  return next(err);
+});
+
+// log error in winston transports except when executing test suite
+if (config.env !== 'test') {  
+  app.use(expressWinston.errorLogger({
+    winstonInstance
+  }));
+}
+
+// error handler, send stacktrace only during development
+app.use((err, req, res, next) => // eslint-disable-line no-unused-vars  
+  res.status(err.status).json({
+    message: err.isPublic ? err.message : httpStatus[err.status],
+    stack: config.env === 'development' ? err.stack : {}
+  })
+);
+
+export default app;  
+At the heart of the MEAN stack is an Express server that uses Node middleware such as bodyParser for processing request payloads, winston for request logging and helmet for securing HTTP requests.
+
+The advantages of MEAN include being based on robust technologies that have proven ability to power high traffic apps. The reference app integrates MongoDB as well as Angular and React. It uses Typescript as well, along with some example components so that you can use them as a launching point. If you don't need a certain library, you can drop it from the dependencies in the package.json file.
+
+Framework 7: Start a Node Server with LoopBack, the API Framework
+Loopback is a Node framework that lets you build API-focused apps fast. It has automated parts of the API-creation process, making it possible to generate RESTful APIs with little to no coding. Loopback combines a set of modules that you can integrate as your app requirements grow. This lets you build apps in a modular way using standard Loopback modules.
+
+You can install Loopback globally with the command:
+
+$ npm install -g loopback-cli
+To create a project, run lb, which will walk you through the creation of a basic Loopback application.
+
+Pick the hello-world app, to include a simple message and controller. The other options are to create an API, or a project containing a basic working example with a memory database.
+
+Going with the hello-world app type generates a basic app. Inside the file "server/server.js" you will find the following generated code:
+
+'use strict';
+
+var loopback = require('loopback');  
+var boot = require('loopback-boot');
+
+var app = module.exports = loopback();
+
+app.start = function() {  
+  // start the web server
+  return app.listen(function() {
+    app.emit('started');
+    var baseUrl = app.get('url').replace(/\/$/, '');
+    console.log('Web server listening at: %s', baseUrl);
+    if (app.get('loopback-component-explorer')) {
+      var explorerPath = app.get('loopback-component-explorer').mountPath;
+      console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
+    }
+  });
+};
+
+// Bootstrap the application, configure models, datasources and middleware.
+// Sub-apps like REST API are mounted via boot scripts.
+boot(app, __dirname, function(err) {  
+  if (err) throw err;
+
+  // start the server if `$ node server.js`
+  if (require.main === module)
+    app.start();
+});
+This code initializes the Loopback server, which you can start with the command node. Visit http://localhost:3000 to verify the server is running. You can also look at http://localhost:3000/explorer to view the Loopback API interface.
+
+Our API is empty to begin with. Creating a new model and REST endpoints is easy with the Loopback CLI. Run the command lb model and type a model name such as "movie", but without the quotes.
+
+Then adjust the values for persistence and other setup according to the prompt or accept the defaults.
+
+Create some properties of the model and define the data types. For example, a movie can have a title which will be a string. Enter as many properties as you'd like, and then finish.
+
+Now we have an API for movies, which you can access with a GET request to http://localhost:3000/api/movies. This will return an empty JSON array. You can explore the API with the API explorer at http://localhost:3000/explorer.
+
+Create some movies and then interact with the API in the browser to see the Loopback server in action. Also, look at the generated source code for the API. Loopback makes developing APIs really easy.
+
+Choosing the Best Node Server for your App
+Choosing the best way for serving your Node.js application involves a series of trade-offs. Rolling your own framework based on the http module is practical, given the wide range of middle-ware you can integrate with a Node app. This path gives you the ability to make all the choices yourself about how your app will work.
+
+Going with a framework such as Socket.io or Sails lets you build on a tested foundation that others have used successfully. The wide range of frameworks also makes it possible for you to reuse code from these libraries to get started a bit faster.
+
+The trade-off with frameworks, particularly opinionated ones like Sails, is that some of the technical choices are already made for you. If you want something outside the norm of what the framework is optimized for, you could have a hard time. Koa and Express offer a safe middle ground where very few choices or assumptions about your app have been made.
+
+Here is a quick guide to selecting the framework that lets you build effectively depending on your app's needs:
